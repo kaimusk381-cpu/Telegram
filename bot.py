@@ -22,19 +22,19 @@ from telegram.ext import (
 # CONFIG
 # ==================================================
 
-BOT_TOKEN = "7578805671:AAF4dfY6pj8WEo_C6LLfH_TyVFcVMXaXB48"
+BOT_TOKEN = " "
 
-GROQ_API_KEY = "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"
+GROQ_API_KEY = " "
 
 EMAIL_ADDRESS = "mannluvy@gmail.com"
 
 # Gmail App Password
-EMAIL_PASSWORD = "upbu faem asqa assy"
+EMAIL_PASSWORD = ". "
 
 BOT_PASSWORD = "luvysecure"
 
 SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 465
+SMTP_PORT = 587
 
 # ==================================================
 # DATABASE
@@ -395,176 +395,52 @@ def send_email(
     msg = EmailMessage()
 
     msg["From"] = f"{custom_name} <{EMAIL_ADDRESS}>"
-
     msg["To"] = to_email
-
     msg["Subject"] = subject
-
     msg["Reply-To"] = EMAIL_ADDRESS
 
-    # NORMAL TEXT VERSION
+    # TEXT
     msg.set_content(body)
 
-    # CLEAN HTML EMAIL
+    # HTML
     html = f"""
     <html>
-
-    <body style="
-        margin:0;
-        padding:0;
-        background:#ffffff;
-        font-family:Arial,sans-serif;
-    ">
-
-    <div style="
-        max-width:700px;
-        margin:auto;
-        padding:20px;
-    ">
-
-    <h2 style="
-        color:#111;
-        margin-bottom:20px;
-    ">
-        {custom_name}
-    </h2>
-
-    <div style="
-        font-size:16px;
-        color:#333;
-        line-height:1.7;
-        margin-bottom:20px;
-        white-space:pre-wrap;
-    ">
-        {body}
-    </div>
+    <body style="font-family:Arial; padding:20px;">
+        <h2>{custom_name}</h2>
+        <div style="white-space:pre-wrap;">{body}</div>
     """
 
-    # IMAGE DISPLAY
-
-    if (
-        file_path and
-        file_path.lower().endswith(
-            (
-                ".jpg",
-                ".jpeg",
-                ".png",
-                ".webp"
-            )
-        )
-    ):
-
-        html += """
-        <div style="margin-top:20px;">
-
-        <img src="cid:mainimage"
-        style="
-            width:100%;
-            border-radius:12px;
-            display:block;
-        ">
-
-        </div>
-        """
-
-    # LINKS SECTION
-
+    # LINKS
     if links:
-
-        html += """
-        <div style="
-            margin-top:25px;
-            border-top:1px solid #eee;
-            padding-top:15px;
-        ">
-
-        <p style="
-            color:#777;
-            font-size:14px;
-            margin-bottom:10px;
-        ">
-        Links
-        </p>
-        """
-
+        html += "<hr><h4>Links</h4>"
         for link in links:
+            html += f'<p><a href="{link}">{link}</a></p>'
 
-            html += f"""
-            <p style="margin:5px 0;">
+    html += "</body></html>"
 
-            <a href="{link}"
-            style="
-                color:#1a73e8;
-                text-decoration:none;
-                font-size:15px;
-            ">
-                {link}
-            </a>
+    msg.add_alternative(html, subtype="html")
 
-            </p>
-            """
-
-        html += "</div>"
-
-    html += """
-
-    <div style="
-        margin-top:40px;
-        border-top:1px solid #eee;
-        padding-top:15px;
-        font-size:12px;
-        color:#999;
-    ">
-        This is an automated message.
-    </div>
-
-    </div>
-    </body>
-    </html>
-    """
-
-    # ADD HTML VERSION
-    msg.add_alternative(
-        html,
-        subtype="html"
-    )
-
-    # ATTACH FILES
-
+    # ATTACH FILE
     if file_path:
 
         mime_type, _ = mimetypes.guess_type(file_path)
 
         if mime_type:
-
             main, sub = mime_type.split("/")
-
         else:
-
-            main, sub = (
-                "application",
-                "octet-stream"
-            )
+            main, sub = "application", "octet-stream"
 
         with open(file_path, "rb") as f:
-
             file_data = f.read()
 
-        # INLINE IMAGE
-
         if main == "image":
-
-            msg.get_payload()[1].add_related(
+            msg.add_attachment(
                 file_data,
                 maintype="image",
                 subtype=sub,
-                cid="<mainimage>"
+                filename=os.path.basename(file_path)
             )
-
-        # NORMAL FILE ATTACHMENT
-
         else:
-
             msg.add_attachment(
                 file_data,
                 maintype=main,
@@ -572,12 +448,14 @@ def send_email(
                 filename=os.path.basename(file_path)
             )
 
-    # SEND EMAIL
+    # ==================================================
+    # FIXED SMTP CONNECTION (THIS WAS YOUR BUG)
+    # ==================================================
+    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as smtp:
 
-    with smtplib.SMTP_SSL(
-        SMTP_SERVER,
-        SMTP_PORT
-    ) as smtp:
+        smtp.ehlo()
+        smtp.starttls()
+        smtp.ehlo()
 
         smtp.login(
             EMAIL_ADDRESS,
