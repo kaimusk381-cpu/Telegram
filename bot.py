@@ -114,38 +114,6 @@ async def sendmail(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_id = update.effective_user.id
 
-    # FORCE CHANNEL JOIN
-
-    try:
-
-        member = await context.bot.get_chat_member(
-            "@starkaicom",
-            user_id
-        )
-
-        if member.status not in [
-            "member",
-            "administrator",
-            "creator"
-        ]:
-
-            await update.message.reply_text(
-                "Join channel first:\n"
-                "https://t.me/starkaicom"
-            )
-
-            return Conver 
-            sationHandler.END
-
-    except:
-
-        await update.message.reply_text(
-            "Join channel first:\n"
-            "https://t.me/starkaicom"
-        )
-
-        return ConversationHandler.END
-
     # LOGIN CHECK
 
     if not is_authenticated(user_id):
@@ -276,31 +244,6 @@ async def get_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     return ConversationHandler.END
 
-FORCE_CHANNEL = "@starkaicom"
-
-# ==================================================
-# FORCE JOIN CHECK
-# ==================================================
-
-async def check_force_join(user_id, bot):
-
-    try:
-
-        member = await bot.get_chat_member(
-            FORCE_CHANNEL,
-            user_id
-        )
-
-        return member.status in [
-            "member",
-            "administrator",
-            "creator"
-        ]
-
-    except:
-
-        return False
-
 # ==================================================
 # LOGIN
 # ==================================================
@@ -371,7 +314,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not is_authenticated(user_id):
 
         await update.message.reply_text(
-            "✅ Channel verification successful.\n\n"
+            "✅ Authentication verification successful.\n\n"
             "Now login using:\n"
             "/login password"
         )
