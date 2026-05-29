@@ -31,7 +31,6 @@ EMAIL_ADDRESS = "mannluvy@gmail.com"
 # Gmail App Password
 EMAIL_PASSWORD = "upbu faem asqa assy"
 
-FORCE_CHANNEL = "@starkaicom"
 BOT_PASSWORD = "luvysecure"
 
 SMTP_SERVER = "smtp.gmail.com"
