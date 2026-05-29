@@ -22,14 +22,14 @@ from telegram.ext import (
 # CONFIG
 # ==================================================
 
-BOT_TOKEN = " "
+BOT_TOKEN = "7578805671:AAF4dfY6pj8WEo_C6LLfH_TyVFcVMXaXB48"
 
-GROQ_API_KEY = " "
+GROQ_API_KEY = "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"
 
 EMAIL_ADDRESS = "mannluvy@gmail.com"
 
 # Gmail App Password
-EMAIL_PASSWORD = ". "
+EMAIL_PASSWORD = "upbu faem asqa assy"
 
 BOT_PASSWORD = "luvysecure"
 
